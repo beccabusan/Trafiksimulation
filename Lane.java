@@ -12,17 +12,22 @@ public class Lane {
 	this.theLane = theLane;
 	// Konstruerar ett Lane-objekt med plats för n fordon
     }
+    
+
+
+
 
     public void step() {
-	int n = this.theLane.length;
+	int n = this.theLane.length;    //Denna funktion strular, Fixa!
 	this.getFirst();
-	for (int i = 0; i<(n-1); i++){
-	    this.theLane[i] = this.theLane[++i];
-
-}
+	for (int i = 0; i<n; i++){
+	    if (this.getCar(i+1) != null){
+		this.theLane[i] = this.getCar(i+1);
+	    }
+	}
 	this.theLane[(n-1)] = null;
 	// Stega fram alla fordon (utom det på plats 0) ett steg 
-        // (om det går). (Fordonet på plats 0 tas bort utifrån 
+	// (om det går). (Fordonet på plats 0 tas bort utifrån 
 	// mm h a metoden nedan.)
     }
 
@@ -37,32 +42,56 @@ public class Lane {
 	return this.theLane[0];
 	// Returnera bilen som står först utan att ta bort den
     }
-
+    
+    public Car getCar(int n){
+	return this.theLane[n];
+    }
 
     public boolean lastFree() {
-	int n =  (this.theLane.length - 1);
-	    if (this.theLane[n] == null){
-		return true;
-	    }
+	int n = (this.theLane.length - 1);
+	if (this.theLane[n] == null){
+	    return true;
+	}
 	return false;
 	// Returnera true om sista platsen ledig, annars false
     }
 
-    public void putLast(Car c) throws OverflowException {
-	int n = this.theLane.length;
-	if (this.theLane[(n-1)] == null){
-	    this.theLane[(n-1)] = c;
+	public void putLast(Car c) throws OverflowException {
+	    int n = this.theLane.length;
+	    if (this.theLane[(n-1)] == null){
+		this.theLane[(n-1)] = c;
+	    }
+	    // Ställ en bil på sista platsen på vägen
+	    // (om det går).
 	}
-	// Ställ en bil på sista platsen på vägen
-	// (om det går).
-    }
     
-    public Car[] getLane(){
-	return this.theLane;
-}
+	public Car[] getLane(){
+	    return this.theLane;
+	}
 
     public String toString() {
-	return "Lane("+ this.getLane() + ")";
+	String result = "[";
+	int n = this.getLane().length;
+	System.out.println(n);
+	for (int i = 0; i<n; i++){
+	    System.out.println(i + "jippie");
+	    if (this.getCar(i) != null){
+		result += this.getCar(i);
+		System.out.println("yay!");
+		System.out.println(i);
+		if (i == n-1){
+		    result = result;		    	     
+		}
+		else if  (this.getCar(i+1) != null){
+		    result += ", ";
+		}
+	    }
+
+	}
+	return "Lane(" + result + "]" + ")";
+    }       
+	
+		    
+   
 }
 
-}
