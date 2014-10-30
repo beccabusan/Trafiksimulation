@@ -17,15 +17,28 @@ public class Lane {
 
 
 
-    public void step() {
-	int n = this.theLane.length;    //Denna funktion strular, Fixa!
-	this.getFirst();
-	for (int i = 1; i<n; i++){
-	    if (this.getCar(i+1) != null){
-		this.theLane[i] = this.getCar(i+1);
-	    }
+    public void step(){
+	int full = 0;
+	int j = 0;
+	int n = this.theLane.length; 
+	while(this.theLane[j] != null){
+	    j++;
 	}
-	this.theLane[(n-1)] = null;
+	if (j == n-1){
+	    full++;
+	}
+	else if (this.theLane[j] == null){
+		for (int i = j; i<n; i++){
+		    if(i == n-1){
+			this.theLane[i] = null;
+		    }
+		    else{
+			this.theLane[i] = this.getCar(i+1);
+		    }
+		} 
+	    }
+
+
 	// Stega fram alla fordon (utom det på plats 0) ett steg 
 	// (om det går). (Fordonet på plats 0 tas bort utifrån 
 	// mm h a metoden nedan.)

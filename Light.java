@@ -20,7 +20,7 @@ public class Light {
     }
     
     public int getGreen(){
-	return this.green;
+	return this.green;()
     }
     public void step() {
 	int a = this.getTime();
