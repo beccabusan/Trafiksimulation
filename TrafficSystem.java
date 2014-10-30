@@ -30,9 +30,9 @@ public class TrafficSystem {
 	this.A = A;
 
 
-   }
+    }
 
-    public TrafficSystem readParameters(){
+    /* public TrafficSystem readParameters(){
 	Scanner A = new Scanner(System.in);
 	System.out.println("Ankomstintensitet: ");
 	Double ankomst = A.nextDouble();
@@ -64,7 +64,7 @@ public class TrafficSystem {
 	// är att föredra vid uttestning av programmet eftersom
 	// man inte då behöver mata in värdena vid varje körning.
         // Standardklassen Properties är användbar för detta. 
-    }
+	}*/
 
     public void step() {
 	s1.step();
@@ -114,9 +114,9 @@ public class TrafficSystem {
     }
     
     public String toString(){
-	return "TrafficSystem(" + this.r0 + ", " + this.r1 + ", " + this.s1 + ", " + this.s2 + ", " + this.A + ", " + this.P +  ")";
+	return "TrafficSystem(" + this.r0 + ", " + this.r1 + ", " + this.s1 + ", " + this.s2 + ", " + "Bilar/sekund: " + this.A + ", " + "Period: " + this.P +  ")";
 
-}
+    }
 
     public void printStatistics() {
 	// Skriv statistiken samlad så här långt

@@ -87,11 +87,8 @@ public class Lane {
 	int n = this.getLane().length;
 	System.out.println(n);
 	for (int i = 0; i<n; i++){
-	    System.out.println(i + "jippie");
 	    if (this.getCar(i) != null){
 		result += this.getCar(i);
-		System.out.println("yay!");
-		System.out.println(i);
 		if (i == n-1){
 		    result = result;		    	     
 		}

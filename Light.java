@@ -20,7 +20,7 @@ public class Light {
     }
     
     public int getGreen(){
-	return this.green;()
+	return this.green;
     }
     public void step() {
 	int a = this.getTime();
@@ -36,7 +36,7 @@ public class Light {
     }
    
     public String  toString()  {
-	return "Light(period = " + this.getPeriod() + " time = " + this.getTime() + " green = " + this.getGreen() + ")";
+	return "Light(period = " + this.getPeriod() + "," +  " green = " + this.getGreen() + ")";
 
 }
 	
