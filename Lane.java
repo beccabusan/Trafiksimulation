@@ -20,7 +20,7 @@ public class Lane {
     public void step() {
 	int n = this.theLane.length;    //Denna funktion strular, Fixa!
 	this.getFirst();
-	for (int i = 0; i<n; i++){
+	for (int i = 1; i<n; i++){
 	    if (this.getCar(i+1) != null){
 		this.theLane[i] = this.getCar(i+1);
 	    }
