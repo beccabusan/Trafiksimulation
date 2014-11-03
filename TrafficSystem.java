@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Random;
 
 public class TrafficSystem {
     // Definierar de vägar och signaler som ingår i det 
@@ -12,7 +13,6 @@ public class TrafficSystem {
     private Light s1;
     private Light s2;
     private double A;
-    private int P;
 
     // Diverse attribut för simuleringsparametrar (ankomstintensiteter,
     // destinationer...)
@@ -21,10 +21,10 @@ public class TrafficSystem {
     
     private int time = 0;
 
-    public TrafficSystem(Lane r0, Lane r1, Light s1, Light s2, Double A) {
+    public TrafficSystem(Lane r0, Lane r1, Lane r2, Light s1, Light s2, Double A) {
 	this.r0 = r0;
 	this.r1 = r1;
-	this.r2 = r1;
+	this.r2 = r2;
 	this.s1 = s1;
 	this.s2 = s2;
 	this.A = A;
@@ -66,65 +66,187 @@ public class TrafficSystem {
         // Standardklassen Properties är användbar för detta. 
 	}*/
 
+    public int getTime(){
+	return this.time;
+    }
+
+    double a = 0;
+    int numberOfCars = 0; 
+    int numberOfTurners = 0;
+    int numberOfStraight = 0;
+    int total;
+    int timeToGoS;
+    int timeToGoT;
+    int timeMaxS;
+    int timeMaxT;
+    int TimeMax;
+    int full;
     public void step() {
+	this.time = (this.time +1);
 	s1.step();
 	s2.step();
 
 	if (s1.isGreen()){
-	    r1.getFirst(); 
+	    Car b = r1.getFirst(); 
 	    r1.step(); 
+	    if (b != null){
+		numberOfStraight++;
+		timeToGoS += (this.time - b.getbornTime());
+		if (timeMaxS < (this.time - (b.getbornTime()))){
+		    timeMaxS = (this.time - (b.getbornTime()));
+		    }
+		    
+	    }
 	}
 	else{
 	    r1.step();
 	}
 	if (s2.isGreen()){
-	    r2.getFirst(); 
-	    r2.step(); 
+	    Car b = r2.getFirst(); 
+	    r2.step();
+	    if ( b != null){
+		numberOfTurners++;
+		timeToGoS += (this.time - b.getbornTime());
+		if (timeMaxT < (this.time - (b.getbornTime()))){
+		    timeMaxT = (this.time - (b.getbornTime()));
+		    }
+		
+	    }
 	}
 	else{
 	    r2.step();
 	}
 
-	if (r0.firstCar().getdest() == 0){
+	if (r0.firstCar() != null && r0.firstCar().getdest() == 1){
 	    if (r1.lastFree()){
-		r1.putLast(r0.firstCar());
+		r1.putLast(r0.getFirst());
 		r0.step();
-	    }
-	    else {
-		r0.step();
-
-	    }
+		if (a >= 1 && r0.lastFree()){
+		    Random ran = new Random();
+  		    r0.putLast(new Car(this.time, ran.nextInt(2) +1));
+		    a = a-1;
+		    numberOfCars++;
+		}
+		    else {a = a + this.A;}
+		}
+		    else if (!r0.lastFree()) {
+			int i = 0;
+			int n = r0.getLength();
+			while(i < n)
+			    if (r0.getCar(i) != null){
+				i++;
+			    }
+		
+			    else if(r0.getCar(i) == null && i != (n-1)){
+				i++;
+			    }	
+				else{
+				    a = a-1;
+				    full++;
+				}
+			    
+		    }
 	}
-	else if (r0.firstCar().getdest() == 1){
+
+	else if (r0.firstCar() != null && r0.firstCar().getdest() == 2){
 	    if (r2.lastFree()){
-		r2.putLast(r0.firstCar());
+		r2.putLast(r0.getFirst());
 		r0.step();
+		if (a >= 1 && r0.lastFree()){
+		    Random ran = new Random();
+		    r0.putLast( new Car(this.time, ran.nextInt(2) +1));
+		    a = a-1;
+		    numberOfCars++;
+		}
+		else {a = a + this.A;}
 	    }
-	    else {
-		r0.step();
+	    else if (!r0.lastFree()) {
+		int i = 0;
+		int n = r0.getLength();
+		while(i < n)
+		    if (r0.getCar(i) != null){
+			i++;
+		    }
+		
+		    else if(r0.getCar(i) == null && i != (n -1)){
+			i++;
+		    }
+		    else{
+			a = a-1;
+			full++;
+		    }
+	    }
 
+	}
+	else {
+	    r0.step();
+	    if(r0.lastFree()){		
+		if (a >= 1){
+		    Random ran = new Random();
+		    r0.putLast(new Car(this.time, ran.nextInt(2) +1));
+		    a = a-1;
+		    numberOfCars++;
+		    System.out.println("jippie!");
+		}
+		else {a = a + this.A;}
 	    }
+	    else if (!r0.lastFree()) {
+		int i = 0;
+		int n = r0.getLength();
+		while(i < n){ 
+		    if (r0.getCar(i) != null){
+			i++;
+		    }
+		
+		    else if(r0.getCar(i) == null && i != (n -1)){
+			i++;
+		    }
+		    else{
+			a = a-1;
+			full++;
+		    }
+		}
+		    
+        
+	    }
+
+		
 	}
-	else { System.out.println("incorrect destination");
-	}
-	this.time = (this.time +1);
+	    
+    }
+
 	
-	// Stega systemet ett tidssteg m h a komponenternas step-metoder
-	// Skapa bilar, lägg in och ta ur på de olika Lane-kompenenterna
-    }
+
+	
+    // Stega systemet ett tidssteg m h a komponenternas step-metoder
+    // Skapa bilar, lägg in och ta ur på de olika Lane-kompenenterna
     
-    public String toString(){
-	return "TrafficSystem(" + this.r0 + ", " + this.r1 + ", " + this.s1 + ", " + this.s2 + ", " + "Bilar/sekund: " + this.A + ", " + "Period: " + this.P +  ")";
-
-    }
-
-    public void printStatistics() {
-	// Skriv statistiken samlad så här långt
-    }
-
-    public void print() {
-	// Skriv ut en grafisk representation av kösituationen
-	// med hjälp av klassernas toString-metoder
-    }
+    
+public String toString(){
+    return "TrafficSystem(Lane0: "   + this.r0 + ", Lane1: " + this.r1 + ", Lane2: " + this.r2 + "," + this.s1 + ", " + this.s2 + ", " + "Bilar/sekund: " + this.A +  ")";
 
 }
+
+public void printStatistics() {
+    System.out.println("");
+	// Skriv statistiken samlad så här långt
+	}
+
+public void print() {
+    // Skriv ut en grafisk representation av kösituationen
+    // med hjälp av klassernas toString-metoder
+}
+
+}
+/*
+ *Totala antalet bilar som åker igenom   x 
+ *antalet bilar som kommer in i systemet  x
+ *antalet som svänger  x
+ *antalet som kör rakt fram x
+*tiden det tar för en bil att åka igenom genomsnitt  (tiden för alla bilar/tot bilar)
+*maximala tiden för en bil att åka igenom
+* tiden för att svänga
+*tiden för att köra rakt fram
+* antalet gånger det blir fullt
+
+*/
