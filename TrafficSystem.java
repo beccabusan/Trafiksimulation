@@ -71,7 +71,7 @@ public class TrafficSystem {
     public int getTime(){
 	return this.time;
     }
-
+   
     double a = 0;
     int numberOfCars = 0; 
     int numberOfTurners = 0;
@@ -81,6 +81,42 @@ public class TrafficSystem {
     int timeMaxS;
     int timeMaxT;
     int full;
+
+    public void putCar(){
+	if (a >= 1){
+	    Random ran = new Random ();
+	    r0.putLast(new Car(this.time, ran.nextInt(2) +1));
+	    a = a-1;
+	    numberOfCars++;
+	}
+	else {a = a + this.A;}
+    }
+
+
+    public void moveCars (Lane x, Lane y){
+	if (y.lastFree()){
+	    y.putLast(x.getFirst());
+	    int fx = x.step();
+	    putCar();
+	}
+
+	else {
+	    int fx = x.step();
+	    if (fx > 0) { 
+		full++;
+		if (a >= 1){a = a-1;}
+
+	    }
+	    else {
+		putCar();
+		Random ran = new Random ();
+		x.putLast(new Car(this.time, ran.nextInt(2) +1));
+		a = a-1;
+		numberOfCars++;
+	    }
+	}
+    }
+
     public void step() {
 	this.time = (this.time +1);
 	s1.step();
@@ -118,107 +154,23 @@ public class TrafficSystem {
 	}
 
 	if (r0.firstCar() != null && r0.firstCar().getdest() == 1){
-	    if (r1.lastFree()){
-		r1.putLast(r0.getFirst());
-		r0.step();  
-	   
-		if (a >= 1 && r0.lastFree()){
-		    Random ran = new Random();
-  		    r0.putLast(new Car(this.time, ran.nextInt(2) +1));
-		    a = a-1;
-		    numberOfCars++;
-		}
-		    else {a = a + this.A;}
-		}
-	    else if (!r0.lastFree()) {
-		int i = 0;
-		int n = r0.getLength();
-		while(i < n){
-		    if (r0.getCar(i) != null){
-			i++;
-		    }
-		
-		    else if(r0.getCar(i) == null && i != (n-1)){
-			i++;
-		    }	
-		    else{
-			a = a-1;
-			full++;
-		    }
-		}	    
-	    }
+	    moveCars(r0, r1);
 	}
 
 	else if (r0.firstCar() != null && r0.firstCar().getdest() == 2){
-	    if (r2.lastFree()){
-		r2.putLast(r0.getFirst());
-		r0.step();
-		if (a >= 1 && r0.lastFree()){
-		    Random ran = new Random();
-		    r0.putLast( new Car(this.time, ran.nextInt(2) +1));
-		    a = a-1;
-		    numberOfCars++;
-		}
-		else {a = a + this.A;}
-	    }
-	    else if (!r0.lastFree()) {
-		int i = 0;
-		int n = r0.getLength();
-		while(i < n){
-		    if (r0.getCar(i) != null){
-			i++;
-		    }
-		
-		    else if(r0.getCar(i) == null && i != (n -1)){
-			i++;
-		    }
-		    else{
-			a = a-1;
-			full++;
-
-		    }
-		}
-	    }
+	    moveCars(r0, r1);
 
 	}
 	else {
-	    r0.step();
-	    if(r0.lastFree()){		
-		if (a >= 1){
-		    Random ran = new Random();
-		    r0.putLast(new Car(this.time, ran.nextInt(2) +1));
-		    a = a-1;
-		    numberOfCars++;
-		}
-		else {a = a + this.A;}
-	    }
-	    else if (!r0.lastFree()) {
-		int i = 0;
-		int n = r0.getLength();
-		while(i < n){ 
-		    if (r0.getCar(i) != null){
-			i++;
-		    }
-		
-		    else if(r0.getCar(i) == null && i != (n -1)){
-			i++;
-		    }
-		    else{
-			a = a-1;
-			full++;
-
-		    }
-		}
-		    
-        
-	    }
-
+	    //steppa och ev lägga till en ny bil
+	    r0.step();		
+	    putCar();
 		
 	}
 	    
     }
 	
-
+    public double getA(){return a;}
 	
     // Stega systemet ett tidssteg m h a komponenternas step-metoder
     // Skapa bilar, lägg in och ta ur på de olika Lane-kompenenterna
@@ -232,7 +184,6 @@ public class TrafficSystem {
     public void printStatistics() {
 	int total = numberOfTurners + numberOfStraight;
 	int timeMax = Math.max(timeMaxS, timeMaxT);
-
 	System.out.println("Maximum time:" + timeMax);
 	System.out.println("Number of Cars passing through:" + total);
 	System.out.println("Number of times the lanes where full:" + full);

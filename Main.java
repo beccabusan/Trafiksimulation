@@ -72,7 +72,7 @@ FileInputStream inputstream = new FileInputStream("input.properties");
 		newsystem.step();
 		System.out.println(newsystem.toString());
 		System.out.println(newsystem.getTime());
-       	   	
+       	   	System.out.println(newsystem.getA());
 	    }
 	    newsystem.printStatistics();
 	}
