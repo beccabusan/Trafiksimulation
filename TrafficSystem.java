@@ -1,5 +1,7 @@
 import java.util.Scanner;
 import java.util.Random;
+import java.lang.*;
+
 
 public class TrafficSystem {
     // Definierar de vägar och signaler som ingår i det 
@@ -74,12 +76,10 @@ public class TrafficSystem {
     int numberOfCars = 0; 
     int numberOfTurners = 0;
     int numberOfStraight = 0;
-    int total;
     int timeToGoS;
     int timeToGoT;
     int timeMaxS;
     int timeMaxT;
-    int TimeMax;
     int full;
     public void step() {
 	this.time = (this.time +1);
@@ -120,7 +120,8 @@ public class TrafficSystem {
 	if (r0.firstCar() != null && r0.firstCar().getdest() == 1){
 	    if (r1.lastFree()){
 		r1.putLast(r0.getFirst());
-		r0.step();
+		r0.step();  
+	   
 		if (a >= 1 && r0.lastFree()){
 		    Random ran = new Random();
   		    r0.putLast(new Car(this.time, ran.nextInt(2) +1));
@@ -129,23 +130,23 @@ public class TrafficSystem {
 		}
 		    else {a = a + this.A;}
 		}
-		    else if (!r0.lastFree()) {
-			int i = 0;
-			int n = r0.getLength();
-			while(i < n)
-			    if (r0.getCar(i) != null){
-				i++;
-			    }
-		
-			    else if(r0.getCar(i) == null && i != (n-1)){
-				i++;
-			    }	
-				else{
-				    a = a-1;
-				    full++;
-				}
-			    
+	    else if (!r0.lastFree()) {
+		int i = 0;
+		int n = r0.getLength();
+		while(i < n){
+		    if (r0.getCar(i) != null){
+			i++;
 		    }
+		
+		    else if(r0.getCar(i) == null && i != (n-1)){
+			i++;
+		    }	
+		    else{
+			a = a-1;
+			full++;
+		    }
+		}	    
+	    }
 	}
 
 	else if (r0.firstCar() != null && r0.firstCar().getdest() == 2){
@@ -163,7 +164,7 @@ public class TrafficSystem {
 	    else if (!r0.lastFree()) {
 		int i = 0;
 		int n = r0.getLength();
-		while(i < n)
+		while(i < n){
 		    if (r0.getCar(i) != null){
 			i++;
 		    }
@@ -174,7 +175,9 @@ public class TrafficSystem {
 		    else{
 			a = a-1;
 			full++;
+
 		    }
+		}
 	    }
 
 	}
@@ -186,7 +189,6 @@ public class TrafficSystem {
 		    r0.putLast(new Car(this.time, ran.nextInt(2) +1));
 		    a = a-1;
 		    numberOfCars++;
-		    System.out.println("jippie!");
 		}
 		else {a = a + this.A;}
 	    }
@@ -204,6 +206,7 @@ public class TrafficSystem {
 		    else{
 			a = a-1;
 			full++;
+
 		    }
 		}
 		    
@@ -214,7 +217,6 @@ public class TrafficSystem {
 	}
 	    
     }
-
 	
 
 	
@@ -222,20 +224,31 @@ public class TrafficSystem {
     // Skapa bilar, lägg in och ta ur på de olika Lane-kompenenterna
     
     
-public String toString(){
-    return "TrafficSystem(Lane0: "   + this.r0 + ", Lane1: " + this.r1 + ", Lane2: " + this.r2 + "," + this.s1 + ", " + this.s2 + ", " + "Bilar/sekund: " + this.A +  ")";
+    public String toString(){
+	return "TrafficSystem(Lane0: "   + this.r0 + ", Lane1: " + this.r1 + ", Lane2: " + this.r2 + "," + this.s1 + ", " + this.s2 + ", " + "Bilar/sekund: " + this.A +  ")";
 
-}
+    }
 
-public void printStatistics() {
-    System.out.println("");
-	// Skriv statistiken samlad så här långt
+    public void printStatistics() {
+	int total = numberOfTurners + numberOfStraight;
+	int timeMax = Math.max(timeMaxS, timeMaxT);
+
+	System.out.println("Maximum time:" + timeMax);
+	System.out.println("Number of Cars passing through:" + total);
+	System.out.println("Number of times the lanes where full:" + full);
+	System.out.println("Cars total inside system:"+ numberOfCars);
+	if (total != 0){
+       	int avarage = (timeToGoS + timeToGoT) / (total);
+       	System.out.println("Avarage time:" + avarage);
 	}
+	else{System.out.println("No avarage time could be calculated because no car got through");}
+	// Skriv statistiken samlad så här långt
+    }
 
-public void print() {
-    // Skriv ut en grafisk representation av kösituationen
-    // med hjälp av klassernas toString-metoder
-}
+    public void print() {
+	// Skriv ut en grafisk representation av kösituationen
+	// med hjälp av klassernas toString-metoder
+    }
 
 }
 /*
@@ -248,5 +261,12 @@ public void print() {
 * tiden för att svänga
 *tiden för att köra rakt fram
 * antalet gånger det blir fullt
+
+*/
+
+/*
+2014-11-04
+Lyckas inte beräkna antalet gånger det blir fullt. Går alltså inte genom looparna där
+variabeln full ökar.
 
 */
